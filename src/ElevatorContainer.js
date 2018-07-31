@@ -118,9 +118,11 @@ class ElevatorContainer extends Component {
   };
 
   // get next greatest floor. if none just return first element
-  getNextGreatest = floor => {
+  getNextGreatest = () => {
     for (let i = 0; i < this.ascendingFloors.length; i++) {
-      if (this.ascendingFloors[i] > floor) {
+      if (this.ascendingFloors[i] > this.currentFloor) {
+        console.log("Ascending floors: " + this.ascendingFloors);
+        console.log("Next floor: " + this.ascendingFloors[i]);
         return this.ascendingFloors[i];
       }
     }
@@ -129,9 +131,9 @@ class ElevatorContainer extends Component {
   };
 
   // get next smallest floor. if none just return last element
-  getNextSmallest = floor => {
+  getNextSmallest = () => {
     for (let i = this.descendingFloors.length - 1; i >= 0; i--) {
-      if (this.descendingFloors[i] < floor) {
+      if (this.descendingFloors[i] < this.currentFloor) {
         return this.descendingFloors[i];
       }
     }
@@ -143,10 +145,13 @@ class ElevatorContainer extends Component {
   addToAscending = floor => {
     const newAscending = [...this.ascendingFloors, floor];
     // get rid of duplicates and sort
-    const noDups = [...new Set(newAscending)].sort();
+    const noDups = [...new Set(newAscending)].sort((a, b) => {
+      return a - b;
+    });
     this.ascendingFloors = noDups;
+    console.log("ascendingFloors: " + noDups);
     // set destination to next greatest floor
-    this.ascendingDestination = this.getNextGreatest(floor);
+    this.ascendingDestination = this.getNextGreatest();
   };
 
   // remove from ascending list
@@ -156,14 +161,16 @@ class ElevatorContainer extends Component {
       floor => floor !== this.currentFloor
     );
     // set next destination to next greatest
-    this.ascendingDestination = this.getNextGreatest(this.currentFloor);
+    this.ascendingDestination = this.getNextGreatest();
   };
 
   // add to descending array
   addToDescending = floor => {
     const newDescending = [...this.descendingFloors, floor];
     // get rid of duplicates and sort
-    const noDups = [...new Set(newDescending)].sort();
+    const noDups = [...new Set(newDescending)].sort((a, b) => {
+      return b - a;
+    });
     this.descendingFloors = noDups;
     // set destination to next smallest
     this.descendingDestination = this.getNextSmallest(floor);
