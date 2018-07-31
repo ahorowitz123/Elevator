@@ -5,7 +5,7 @@ import SelectFloor from "./SelectFloor";
 import CallElevator from "./CallElevator";
 
 // Amount of time in ms it takes to get to another floor
-const FLOOR_TIME = 3000;
+const FLOOR_TIME = 4000;
 // Total amount of floors
 const FLOORS = 10;
 // Array of amount of floors
@@ -30,6 +30,9 @@ class ElevatorContainer extends Component {
 
   componentDidMount = () => {
     console.log("Initialized Elevator");
+    this.select(4);
+    this.call(1, -1);
+    this.call(3, 1);
   };
 
   // return promis of delay
@@ -133,7 +136,11 @@ class ElevatorContainer extends Component {
   // get next smallest floor. if none just return last element
   getNextSmallest = () => {
     for (let i = this.descendingFloors.length - 1; i >= 0; i--) {
+      console.log("i: " + i);
+      console.log("this descending floor: " + this.descendingFloors[i]);
       if (this.descendingFloors[i] < this.currentFloor) {
+        console.log("descending floors: " + this.descendingFloors);
+        // console.log("this descending floor: " + this.descendingFloors[i]);
         return this.descendingFloors[i];
       }
     }
@@ -169,11 +176,12 @@ class ElevatorContainer extends Component {
     const newDescending = [...this.descendingFloors, floor];
     // get rid of duplicates and sort
     const noDups = [...new Set(newDescending)].sort((a, b) => {
-      return b - a;
+      return a - b;
     });
     this.descendingFloors = noDups;
     // set destination to next smallest
-    this.descendingDestination = this.getNextSmallest(floor);
+    this.descendingDestination = this.getNextSmallest();
+    console.log("descending destination: " + this.descendingDestination);
   };
 
   // remove from descending array
@@ -183,7 +191,7 @@ class ElevatorContainer extends Component {
       floor => floor !== this.currentFloor
     );
     // set next destination to next smallest
-    this.descendingDestination = this.getNextSmallest(this.currentFloor);
+    this.descendingDestination = this.getNextSmallest();
   };
 
   // select a floor
